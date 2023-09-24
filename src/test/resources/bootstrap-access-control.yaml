@@ -1,0 +1,12 @@
+embedded:
+  rabbitmq:
+    docker-image: rabbitmq:3.11.10-management-alpine
+    files-to-include:
+      - classpath-resource: access-control/rabbitmq.conf
+        container-path: /
+      - classpath-resource: access-control/definitions.json
+        container-path: /
+    env:
+      RABBITMQ_CONFIG_FILE: /rabbitmq.conf
+    vhost: virtual-host
+

@@ -1,0 +1,210 @@
+{
+  "rabbit_version": "3.11.10",
+  "rabbitmq_version": "3.11.10",
+  "product_name": "RabbitMQ",
+  "product_version": "3.11.10",
+  "vhosts": [
+    {
+      "name": "virtual-host"
+    }
+  ],
+  "users": [
+    {
+      "name": "admin",
+      "password_hash": "lRiLLycvEwvE7xS9xWdTvIGjhVPOyN12VC7mczYzt5GAFQfM",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": [
+        "administrator"
+      ]
+    },
+    {
+      "name": "producer",
+      "password_hash": "lRiLLycvEwvE7xS9xWdTvIGjhVPOyN12VC7mczYzt5GAFQfM",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": [
+      ]
+    },
+    {
+      "name": "consumer-a",
+      "password_hash": "lRiLLycvEwvE7xS9xWdTvIGjhVPOyN12VC7mczYzt5GAFQfM",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": [
+      ]
+    },
+    {
+      "name": "consumer-b",
+      "password_hash": "lRiLLycvEwvE7xS9xWdTvIGjhVPOyN12VC7mczYzt5GAFQfM",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": [
+      ]
+    }
+  ],
+  "permissions": [
+    {
+      "user": "producer",
+      "vhost": "virtual-host",
+      "configure": "",
+      "write": "events",
+      "read": "^commands.handling$"
+    },
+    {
+      "user": "consumer-a",
+      "vhost": "virtual-host",
+      "configure": "",
+      "write": "commands",
+      "read": "^events\\.consumer-a$"
+    },
+    {
+      "user": "consumer-b",
+      "vhost": "virtual-host",
+      "configure": "",
+      "write": "commands",
+      "read": "^events\\.consumer-b$"
+    }
+  ],
+  "exchanges": [
+    {
+      "name": "commands",
+      "vhost": "virtual-host",
+      "type": "fanout",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false
+    },
+    {
+      "name": "commands.dlx",
+      "vhost": "virtual-host",
+      "type": "fanout",
+      "durable": true,
+      "auto_delete": false,
+      "internal": true
+    },
+    {
+      "name": "events",
+      "vhost": "virtual-host",
+      "type": "fanout",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false
+    },
+    {
+      "name": "events.consumer-a.dlx",
+      "vhost": "virtual-host",
+      "type": "fanout",
+      "durable": true,
+      "auto_delete": false,
+      "internal": true
+    },
+    {
+      "name": "events.consumer-b.dlx",
+      "vhost": "virtual-host",
+      "type": "fanout",
+      "durable": true,
+      "auto_delete": false,
+      "internal": true
+    }
+  ],
+  "queues": [
+    {
+      "name": "commands.handling",
+      "vhost": "virtual-host",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-queue-type": "quorum",
+        "x-dead-letter-exchange": "commands.dlx",
+        "x-dead-letter-strategy": "at-least-once",
+        "x-overflow": "reject-publish"
+      }
+    },
+    {
+      "name": "commands.handling.dlq",
+      "vhost": "virtual-host",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-queue-type": "quorum"
+      }
+    },
+    {
+      "name": "events.consumer-a",
+      "vhost": "virtual-host",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-queue-type": "quorum",
+        "x-dead-letter-exchange": "events.consumer-a.dlx",
+        "x-dead-letter-strategy": "at-least-once",
+        "x-overflow": "reject-publish"
+      }
+    },
+    {
+      "name": "events.consumer-a.dlq",
+      "vhost": "virtual-host",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-queue-type": "quorum"
+      }
+    },
+    {
+      "name": "events.consumer-b",
+      "vhost": "virtual-host",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-queue-type": "quorum",
+        "x-dead-letter-exchange": "events.consumer-b.dlx",
+        "x-dead-letter-strategy": "at-least-once",
+        "x-overflow": "reject-publish"
+      }
+    },
+    {
+      "name": "events.consumer-b.dlq",
+      "vhost": "virtual-host",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-queue-type": "quorum"
+      }
+    }
+  ],
+  "bindings": [
+    {
+      "source": "commands",
+      "vhost": "virtual-host",
+      "destination": "commands.handling",
+      "destination_type": "queue"
+    },
+    {
+      "source": "commands.dlx",
+      "vhost": "virtual-host",
+      "destination": "commands.handling.dlq",
+      "destination_type": "queue"
+    },
+    {
+      "source": "events",
+      "vhost": "virtual-host",
+      "destination": "events.consumer-a",
+      "destination_type": "queue"
+    },
+    {
+      "source": "events",
+      "vhost": "virtual-host",
+      "destination": "events.consumer-b",
+      "destination_type": "queue"
+    },
+    {
+      "source": "events.consumer-a.dlx",
+      "vhost": "virtual-host",
+      "destination": "events.consumer-a.dlq",
+      "destination_type": "queue"
+    },
+    {
+      "source": "events.consumer-b.dlx",
+      "vhost": "virtual-host",
+      "destination": "events.consumer-b.dlq",
+      "destination_type": "queue"
+    }
+  ]
+}
