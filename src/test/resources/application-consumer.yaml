@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: spring-rabbitmq-samples
+  rabbitmq:
+    addresses: ${embedded.rabbitmq.host}:${embedded.rabbitmq.port}
+    address-shuffle-mode: random
+    virtual-host: virtual-host
+    username: admin
+    password: rabbitmq
+    connection-timeout: 60s
+    channel-rpc-timeout: 60s
+    cache:
+      connection:
+        mode: channel
+      channel:
+        size: 8
+    listener:
+      type: direct
+      direct:
+        consumers-per-queue: 8
+        prefetch: 1
+        missing-queues-fatal: true
+        retry:
+          enabled: true
+          initial-interval: 200ms
+          max-attempts: 3
+    dynamic: false
+logging:
+  level:
+    org:
+      springframework:
+        amqp:
+          rabbit:
+            connection:
+              CachingConnectionFactory: debug
+    com:
+      example:
+        spring:
+          rabbitmq: trace

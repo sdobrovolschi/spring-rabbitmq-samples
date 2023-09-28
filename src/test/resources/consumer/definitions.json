@@ -1,0 +1,59 @@
+{
+  "rabbit_version": "3.11.10",
+  "rabbitmq_version": "3.11.10",
+  "product_name": "RabbitMQ",
+  "product_version": "3.11.10",
+  "vhosts": [
+    {
+      "name": "virtual-host"
+    }
+  ],
+  "users": [
+    {
+      "name": "admin",
+      "password_hash": "lRiLLycvEwvE7xS9xWdTvIGjhVPOyN12VC7mczYzt5GAFQfM",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": [
+        "administrator"
+      ]
+    }
+  ],
+  "permissions": [
+    {
+      "user": "admin",
+      "vhost": "virtual-host",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    }
+  ],
+  "exchanges": [
+    {
+      "name": "messages",
+      "vhost": "virtual-host",
+      "type": "fanout",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false
+    }
+  ],
+  "queues": [
+    {
+      "name": "messages.handling",
+      "vhost": "virtual-host",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-queue-type": "quorum"
+      }
+    }
+  ],
+  "bindings": [
+    {
+      "source": "messages",
+      "vhost": "virtual-host",
+      "destination": "messages.handling",
+      "destination_type": "queue"
+    }
+  ]
+}
